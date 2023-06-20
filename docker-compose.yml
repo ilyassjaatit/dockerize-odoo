@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  odoo:
+    build: .
+    ports:
+      - "8069:8069"
+      - "8072:8072"
+    volumes:
+      - ./src-odoo:/src-odoo
+      - ./config:/etc/config
+    depends_on:
+      - postgresql
+    env_file:
+      - ./.envs/.local/.postgresql
+      - ./.envs/.local/.odoo
+    #
+    command: /start
+
+
+  postgresql:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.envs/.local/.postgresql
+
+volumes:
+  postgres_data:
