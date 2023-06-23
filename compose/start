@@ -4,5 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-python ./odoo-bin -c /etc/config/odoo-server.conf
+# Input: /etc/config/odoo-server.conf
+# Output: /tmp/config/env-odoo-server.conf (after variable substitution)
+envsubst < /etc/config/odoo-server.conf > /tmp/config/env-odoo-server.conf
+
+python ./odoo-bin -c /tmp/config/env-odoo-server.conf
 
