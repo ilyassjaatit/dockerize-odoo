@@ -19,6 +19,8 @@ RUN apt install libpq-dev -y
 RUN apt install libxml2-dev -y
 RUN apt install libxslt1-dev libldap2-dev  -y
 RUN apt install libsasl2-dev libffi-dev -y
+# To use envsubst
+RUN apt install gettext-base -y
 
 # install node  https://packages.debian.org/bullseye/arm64/nodejs
 # npm https://packages.debian.org/bullseye/arm64/npm
