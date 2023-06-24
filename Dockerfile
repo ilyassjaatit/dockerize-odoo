@@ -20,7 +20,7 @@ RUN apt install libxml2-dev -y
 RUN apt install libxslt1-dev libldap2-dev  -y
 RUN apt install libsasl2-dev libffi-dev -y
 # To use envsubst
-RUN apt install gettext-base -y
+RUN apt install gettext -y
 
 # install node  https://packages.debian.org/bullseye/arm64/nodejs
 # npm https://packages.debian.org/bullseye/arm64/npm
@@ -47,7 +47,7 @@ COPY ./compose/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-
+COPY custom-addons /root/.local/share/Odoo/addons/16.0/
 COPY src-odoo ./
 
 WORKDIR src-odoo

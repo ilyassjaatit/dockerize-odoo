@@ -8,6 +8,7 @@ services:
     volumes:
       - ./src-odoo:/src-odoo
       - ./config:/etc/config
+      - ./custom-addons:/root/.local/share/Odoo/addons/16.0/
     depends_on:
       - postgresql
     env_file:
