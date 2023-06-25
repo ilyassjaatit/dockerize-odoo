@@ -7,10 +7,11 @@
     'category': 'Services/Project',
     'depends': ['project'],
     'data': [
+        'views/res_config_settings_views.xml',
         'views/project_views.xml',
     ],
     'demo': [],
     'installable': True,
     'application': True,
-    'auto_install': True,
+    'auto_install': False,
 }

@@ -5,10 +5,18 @@
         <field name="model">project.project</field>
         <field name="inherit_id" ref="project.edit_project"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook//page[@name='settings']//group[@name='extra_settings']" position="after">
-                <group>
+            <xpath expr="//notebook//page[@name='settings']//group[@name='group_documents_analytics']" position="after">
+                <group string="Configure github project" col="1" class="row mt16 o_settings_container">
                     <field string="Sync GitHub Project" name="sync_github_project"/>
+
                 </group>
+            </xpath>
+            <xpath expr="//notebook//page[@name='description']" position="after">
+                <page name="project-gitHub" string="GitHub Project" attrs="{'invisible':[('sync_github_project', '=', False)]}">
+                    <group>
+
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>
