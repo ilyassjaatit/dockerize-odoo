@@ -13,7 +13,6 @@ services:
     env_file:
       - ./.envs/.local/.postgresql
       - ./.envs/.local/.odoo
-    #
     command: /start
 
   postgresql:
