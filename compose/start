@@ -6,7 +6,7 @@ set -o nounset
 
 # Input: /etc/config/odoo-server.conf
 # Output: /tmp/config/env-odoo-server.conf (after variable substitution)
-envsubst < /etc/config/odoo-server.conf > /tmp/config/env-odoo-server.conf
 
-python ./odoo-bin -c /tmp/config/env-odoo-server.conf
+envsubst < /etc/config/odoo-server.conf > /tmp/env-odoo-server.conf
+python ./odoo-bin -c /tmp/env-odoo-server.conf -i base
 

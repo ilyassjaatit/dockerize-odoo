@@ -23,7 +23,10 @@ from inspect import signature
 from pprint import pformat
 from weakref import WeakSet
 
-from decorator import decorate
+try:
+    from decorator import decoratorx as decorator
+except ImportError:
+    from decorator import decorator
 
 from .exceptions import AccessError, CacheMiss
 from .tools import classproperty, frozendict, lazy_property, OrderedSet, Query, StackMap
@@ -381,6 +384,7 @@ def model(method):
 _create_logger = logging.getLogger(__name__ + '.create')
 
 
+@decorator
 def _model_create_single(create, self, arg):
     # 'create' expects a dict and returns a record
     if isinstance(arg, Mapping):
@@ -398,11 +402,12 @@ def model_create_single(method):
             records = model.create([vals, ...])
     """
     _create_logger.warning("The model %s is not overriding the create method in batch", method.__module__)
-    wrapper = decorate(method, _model_create_single)
+    wrapper = _model_create_single(method) # pylint: disable=no-value-for-parameter
     wrapper._api = 'model_create'
     return wrapper
 
 
+@decorator
 def _model_create_multi(create, self, arg):
     # 'create' expects a list of dicts and returns a recordset
     if isinstance(arg, Mapping):
@@ -418,7 +423,7 @@ def model_create_multi(method):
             record = model.create(vals)
             records = model.create([vals, ...])
     """
-    wrapper = decorate(method, _model_create_multi)
+    wrapper = _model_create_multi(method) # pylint: disable=no-value-for-parameter
     wrapper._api = 'model_create'
     return wrapper
 
@@ -694,6 +699,16 @@ class Environment(Mapping):
         # because 'env.lang' may be injected in SQL queries
         return lang if lang and self['res.lang']._lang_get_id(lang) else None
 
+    @property
+    def ocb(self):
+        """Allow to flag OCB environment so we can easily address compatibility issues
+        when making backports or improvements that aren't present in the current Odoo
+        version.
+
+        :rtype bool
+        """
+        return True
+
     def clear(self):
         """ Clear all record caches, and discard all fields to recompute.
             This may be useful when recovering from a failed ORM operation.
@@ -929,14 +944,14 @@ class Cache(object):
             if field_cache and isinstance(next(iter(field_cache)), tuple):
                 data[field] = {
                     key: {
-                        Starred(id_) if id_ in dirty_ids else id_: val
+                        Starred(id_) if id_ in dirty_ids else id_: val if field.type != 'binary' else '<binary>'
                         for id_, val in key_cache.items()
                     }
                     for key, key_cache in field_cache.items()
                 }
             else:
                 data[field] = {
-                    Starred(id_) if id_ in dirty_ids else id_: val
+                    Starred(id_) if id_ in dirty_ids else id_: val if field.type != 'binary' else '<binary>'
                     for id_, val in field_cache.items()
                 }
         return repr(data)
@@ -1160,10 +1175,17 @@ class Cache(object):
             if name != 'id' and record.id in self._get_field_cache(record, field):
                 yield field
 
-    def get_records(self, model, field):
-        """ Return the records of ``model`` that have a value for ``field``. """
-        field_cache = self._get_field_cache(model, field)
-        return model.browse(field_cache)
+    def get_records(self, model, field, all_contexts=False):
+        """ Return the records of ``model`` that have a value for ``field``.
+        By default the method checks for values in the current context of ``model``.
+        But when ``all_contexts`` is true, it checks for values *in all contexts*.
+        """
+        if all_contexts and model.pool.field_depends_context[field]:
+            field_cache = self._data.get(field, EMPTY_DICT)
+            ids = OrderedSet(id_ for sub_cache in field_cache.values() for id_ in sub_cache)
+        else:
+            ids = self._get_field_cache(model, field)
+        return model.browse(ids)
 
     def get_missing_ids(self, records, field):
         """ Return the ids of ``records`` that have no value for ``field``. """
