@@ -13,7 +13,7 @@ services:
     env_file:
       - ./.envs/.local/.postgresql
       - ./.envs/.local/.odoo
-    command: /start
+    command: /start -i base
 
   postgresql:
     image: postgres:15

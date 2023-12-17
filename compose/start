@@ -8,5 +8,5 @@ set -o nounset
 # Output: /tmp/config/env-odoo-server.conf (after variable substitution)
 
 envsubst < /etc/config/odoo-server.conf > /tmp/env-odoo-server.conf
-python ./odoo-bin -c /tmp/env-odoo-server.conf -i base
+python ./odoo-bin -c /tmp/env-odoo-server.conf $@
 
