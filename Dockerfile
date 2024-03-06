@@ -36,9 +36,13 @@ RUN apt install xfonts-75dpi wkhtmltopdf -y
 COPY src-odoo/requirements.txt /tmp
 RUN pip install -r /tmp/requirements.txt
 
+# To add dependencies and addons from pypi
+COPY ./extra_requirements.txt /tmp
+
 # Entrypoint
 COPY /compose/entrypoint /entrypoint
 # removes carriage returns at the end of each line
+
 RUN sed -i 's/\r$//g' /entrypoint
 RUN chmod +x /entrypoint
 
@@ -47,9 +51,12 @@ COPY ./compose/start /start
 RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
-
-COPY src-odoo ./
-
 WORKDIR src-odoo
+COPY src-odoo .
+
+# We install odoo, it is a dependency of the pypi odoo addons
+RUN pip install -e .
+# install odoo addons by pypi
+RUN pip install -r /tmp/extra_requirements.txt
 
 ENTRYPOINT ["/entrypoint"]
