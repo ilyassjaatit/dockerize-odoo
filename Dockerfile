@@ -22,6 +22,7 @@ RUN apt install libsasl2-dev libffi-dev -y
 # To use envsubst
 RUN apt install gettext-base -y
 
+# TODO install a specific version of node.js, to have more control
 # install node  https://packages.debian.org/bullseye/arm64/nodejs
 # npm https://packages.debian.org/bullseye/arm64/npm
 RUN apt install nodejs  -y
