@@ -53,6 +53,7 @@ services:
 
 volumes:
   postgres_data:
+  odoo_filestore:
 
 networks:
   local_network:
