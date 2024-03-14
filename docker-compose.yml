@@ -17,7 +17,6 @@ services:
       - ./.envs/.local/.odoo
     command: /start
 
-
   postgresql:
     image: postgres:15
     ports:
