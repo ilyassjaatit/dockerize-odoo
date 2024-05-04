@@ -21,6 +21,9 @@ In the web interface, you can inspect the emails, check fields such as "From," "
 ##### 1. install odoo with an addon and start the server
 This same command can be used to install other modules or initialize the database with a specific addon
 ```bash
+# 
+git clone git@github.com:ilyassjaatit/OCB.git src-odoo 
+
 # Initial odoo without any addon
 docker compose run --rm odoo /bin/bash /start -i base --stop-after-init
 
