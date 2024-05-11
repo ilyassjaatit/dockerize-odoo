@@ -22,7 +22,7 @@ In the web interface, you can inspect the emails, check fields such as "From," "
 This same command can be used to install other modules or initialize the database with a specific addon
 ```bash
 # 
-git clone git@github.com:ilyassjaatit/OCB.git src-odoo 
+git clone git@github.com:ilyassjaatit/OCB.git --single-branch  src-odoo -b 16.0
 
 # Initial odoo without any addon
 docker compose run --rm odoo /bin/bash /start -i base --stop-after-init
